@@ -47,7 +47,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def tambah_barang(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["mode"] = "barang"
-    await update.message.reply_text("Silahkan kirim file excel berisi data barang")
+    await update.message.reply_text("Silahkan kirim file excel berisi data barang dengan format: nama_product, stock_toko, stock_gudang, stock_kampas")
 
 
 async def tambah_data_keuangan(update: Update, context: ContextTypes.DEFAULT_TYPE):
