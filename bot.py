@@ -73,18 +73,18 @@ async def set_commands(app):
     await app.bot.set_my_commands(
         [
             BotCommand("start", "Memulai Bot"),
-            BotCommand("/tambah_barang", "Tambah data produk dari Excel"),
-            BotCommand("/tambah_keuangan", "Tambah data produ keuangan dari Excel"),
-            BotCommand("/export_data", "Export data produk dari database ke excel"),
+            BotCommand("/input_file_cost", "Tambah data operational dari Excel"),
+            # BotCommand("/tambah_keuangan", "Tambah data produ keuangan dari Excel"),
+            # BotCommand("/export_data", "Export data produk dari database ke excel"),
         ]
     )
 
 
 app = ApplicationBuilder().token(bot_token).post_init(set_commands).build()
 app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("tambah_barang", tambah_barang))
-app.add_handler(CommandHandler("tambah_keuangan", tambah_data_keuangan))
-app.add_handler(CommandHandler("export_data", get_data_to_excel))
+app.add_handler(CommandHandler("input_file_cost", tambah_barang)) #refactor
+# app.add_handler(CommandHandler("tambah_keuangan", tambah_data_keuangan))
+# app.add_handler(CommandHandler("export_data", get_data_to_excel))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 app.add_handler(MessageHandler(filters.Document.FileExtension("xlsx"), handler_xlsx))
 

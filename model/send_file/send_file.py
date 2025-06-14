@@ -38,10 +38,19 @@ async def handler_xlsx(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
                 return
             records = df.to_dict(orient="records")
-            database.supabase.table("stock_product").insert(records).execute()
-            await update.message.reply_text(
-                f"{len(records)} data barang berhasil dismpan "
-            )
+            # database.supabase.table("stock_product").insert(records).execute()
+            # await update.message.reply_text(
+            #     f"{len(records)} data barang berhasil dismpan "
+            # )
+            import requests
+            response = requests.post(
+                settings_id.api_url + "/api/v1/ai/general",
+                json=payload,
+                headers=headers)
+            if response.status_code == 200:
+                return response.json()['data']['response']
+            else:
+                raise ValidationError(response.text())
         context.user_data.pop("mode", None)
     except Exception as e:
         await update.message.reply_text(f"terjadi kesalahan : {e}")
