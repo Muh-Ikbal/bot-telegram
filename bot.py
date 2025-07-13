@@ -42,7 +42,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def input_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    update.user_data["command"] = "outcome"
+    context.user_data["command"] = "outcome"
 
     await update.message.reply_text(
         "Silahkan data text, excel, atau gambar"
@@ -50,12 +50,12 @@ async def input_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def input_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    update.user_data["command"] = "income"
+    context.user_data["command"] = "income"
 
     await update.message.reply_text("Silahkan data text, excel, atau gambar")
 
 async def handler_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_command = update.user_data.get('command')
+    user_command = context.user_data.get('command')
     if(user_command == 'income'):
         await handler_income(update, context)
     elif(user_command == 'outcome'):
