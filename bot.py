@@ -10,11 +10,12 @@ from telegram.ext import (
 )
 from telegram.constants import ChatAction
 from telegram import BotCommand
-from model.send_file.send_file import handler_xlsx, handler_image, handler_text
-from model.send_file.get_data_to_file import get_data_to_excel
+from model.send_file.send_file import handler_income,handler_outcome
+# from model.send_file.get_data_to_file import get_data_to_excel
 
 load_dotenv()
 bot_token = os.getenv("BOT_TOKEN")
+
 # ALLOWED_USERS = ['ikbaldes']
 
 
@@ -32,64 +33,58 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Halo, {update.effective_user.first_name}! 👋\n"
         "Saya adalah bot management EBITDA.\n\n"
         "Silakan gunakan perintah berikut:\n"
-        "/input_file_cost — untuk menginput file cost dalam bentuk file Excel\n"
-        "/cashflow_manage_image — untuk menginput data pengeluaran dalam bentuk file gambar\n"
-        "/cashflow_manage_text — untuk menginput data pengeluaran\n"
+        "/cash_masuk — untuk menginput file (excel atau gambar) atau data pemasukan\n"
+        "/cash_keluar — untuk menginput file (excel atau gambar) atau data pengeluaran\n"
     )
-
-async def input_file_cost(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data["mode"] = "barang"
-    await update.message.reply_text(
-        "Silahkan kirim file excel dengan format .xlsx"
-    )
-
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Anda mengirim: {update.message.text}")
 
 
-# handle image
-async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    photo = update.message.photo[-1]
-    file = await photo.get_file()
-    await update.message.reply_photo(
-        photo=file.file_id, caption="kamu mengirim gambar ini"
+async def input_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    update.user_data["command"] = "outcome"
+
+    await update.message.reply_text(
+        "Silahkan data text, excel, atau gambar"
     )
 
-async def cashflow_manage_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "Silahkan kirim gambar"
-    )
-    
-async def cashflow_manage_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "Silahkan inputkan text"
-    )
 
+async def input_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    update.user_data["command"] = "income"
+
+    await update.message.reply_text("Silahkan data text, excel, atau gambar")
+
+async def handler_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_command = update.user_data.get('command')
+    if(user_command == 'income'):
+        await handler_income(update, context)
+    elif(user_command == 'outcome'):
+        await handler_outcome(update,context)
+    else:
+        await update.message.reply_text(" Silahkan gunakan /cash_masuk atau /cash_keluar")
 # menu
 async def set_commands(app):
     await app.bot.set_my_commands(
         [
             BotCommand("start", "Memulai Bot"),
-            BotCommand("/input_file_cost", "Tambah data operational dari Excel"),
-            BotCommand("/cashflow_manage_image", "Manage data pengeluaran"),
-            BotCommand("/cashflow_manage_text", "Manage data pengeluaran"),
+            BotCommand("/cash_masuk", "Manage data pemasukan"),
+            BotCommand("/cash_keluar", "Manage data pengeluaran"),
         ]
     )
 
 
 app = ApplicationBuilder().token(bot_token).post_init(set_commands).build()
 app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("input_file_cost", input_file_cost))
-app.add_handler(CommandHandler("cashflow_manage_image", cashflow_manage_image))
-app.add_handler(CommandHandler("cashflow_manage_text", cashflow_manage_text))
-
-# app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
-app.add_handler(MessageHandler(filters.Document.FileExtension("xlsx"), handler_xlsx))
-app.add_handler(MessageHandler(filters.PHOTO, handler_image))
-app.add_handler(MessageHandler(filters.TEXT, handler_text))
+app.add_handler(CommandHandler("cash_masuk", input_income))
+app.add_handler(CommandHandler("cash_keluar", input_outcome))
+app.add_handler(
+    MessageHandler(
+        filters.TEXT | filters.PHOTO | filters.Document.FileExtension("xlsx"),
+        handler_file,
+    )
+)
 
 if __name__ == "__main__":
     print("Bot is running...")
-  
+
 app.run_polling()

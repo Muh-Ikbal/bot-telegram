@@ -51,60 +51,8 @@ async def handler_xlsx(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data.pop("mode", None)
     except Exception as e:
         await update.message.reply_text(f"terjadi kesalahan : {e}")
+async def handler_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    pass
 
-async def handler_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    try:
-        document = update.message.photo[-1]
-        file = await context.bot.get_file(document.file_id)
-        file_path = f"/tmp/{document.file_unique_id}"
-        await file.download_to_drive(file_path)
-
-        with open(file_path, "rb") as file:
-            encoded_file = base64.b64encode(file.read()).decode("utf-8")
-
-        payload = {
-            "file_name": "gambar.jpg",
-            "file_data": encoded_file
-        }
-
-        response = requests.post(
-            f"{api_url}/api/cashflow/image",
-            json=payload,
-            headers={"Content-Type": "application/json"}
-        )
-        if response.status_code == 200:
-            result = response.text
-            await update.message.reply_text(result)
-        else:
-            await update.message.reply_text(f"Gagal mengirim file: {response.text}")
-        context.user_data.pop("mode", None)
-    except Exception as e:
-        await update.message.reply_text(f"terjadi kesalahan : {e}")
-        
-async def handler_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    try:
-        document = update.message.text
-        # file = await context.bot.get_file(document.file_id)
-        # file_path = f"/tmp/{document.file_unique_id}"
-        # await file.download_to_drive(file_path)
-
-        # with open(file_path, "rb") as file:
-        #     encoded_file = base64.b64encode(file.read()).decode("utf-8")
-
-        payload = {
-            "text": document
-        }
-
-        response = requests.post(
-            f"{api_url}/api/cashflow/text",
-            json=payload,
-            headers={"Content-Type": "application/json"}
-        )
-        if response.status_code == 200:
-            result = response.text
-            await update.message.reply_text(result)
-        else:
-            await update.message.reply_text(f"Gagal memproses text: {response.text}")
-        context.user_data.pop("mode", None)
-    except Exception as e:
-        await update.message.reply_text(f"terjadi kesalahan : {e}")
+async def handler_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    pass
