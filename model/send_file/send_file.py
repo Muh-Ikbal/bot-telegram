@@ -58,13 +58,18 @@ async def handler_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         file = await context.bot.get_file(document.file_id)
         file_path = f"/tmp/{document.file_unique_id}"
         await file.download_to_drive(file_path)
+        user = update.message.from_user
+        user_name = user.name
+        user_id = user.id
 
         with open(file_path, "rb") as file:
             encoded_file = base64.b64encode(file.read()).decode("utf-8")
 
         payload = {
             "file_name": "gambar.jpg",
-            "file_data": encoded_file
+            "file_data": encoded_file,
+            "name": user_name,
+            "id": user_id
         }
 
         response = requests.post(
@@ -83,16 +88,15 @@ async def handler_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
 async def handler_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
+        user = update.message.from_user
         document = update.message.text
-        # file = await context.bot.get_file(document.file_id)
-        # file_path = f"/tmp/{document.file_unique_id}"
-        # await file.download_to_drive(file_path)
-
-        # with open(file_path, "rb") as file:
-        #     encoded_file = base64.b64encode(file.read()).decode("utf-8")
+        user_name = user.name
+        user_id = user.id
 
         payload = {
-            "text": document
+            "text": document,
+            "name": user_name,
+            "id": user_id
         }
 
         response = requests.post(
