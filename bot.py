@@ -33,8 +33,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Halo, {update.effective_user.first_name}! 👋\n"
         "Saya adalah bot management EBITDA.\n\n"
         "Silakan gunakan perintah berikut:\n"
-        "/cash_masuk — untuk menginput file (excel atau gambar) atau data pemasukan\n"
-        "/cash_keluar — untuk menginput file (excel atau gambar) atau data pengeluaran\n"
+        "/cash_masuk — untuk menginput file excel, gambar atau data pemasukan(text)\n"
+        "/cash_keluar — untuk menginput file excel, gambar atau data pengeluaran (text)\n"
     )
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -13,12 +13,16 @@ api_url = os.getenv("API_URL")
 
 async def handler_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
-
+    user = update.message.from_user
+    user_name = user.name
+    user_id = user.id
     if message.text:
         try:
             document = message.text
-
+            
             payload = {
+                "name" : user_name,
+                "id" : user_id,
                 "text": document
             }
 
@@ -42,10 +46,14 @@ async def handler_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
             file = await context.bot.get_file(document.file_id)
             file_path = f"/tmp/{document.file_unique_id}"
             await file.download_to_drive(file_path)
-
             with open(file_path, "rb") as file:
                 encoded_file = base64.b64encode(file.read()).decode("utf-8")
-            payload = {"file_name": "gambar.jpg", "file_data": encoded_file}
+            payload = {
+                "name" : user_name,
+                "id" : user_id,
+                "file_name": "gambar.jpg", 
+                "file_data": encoded_file
+                }
 
             response = requests.post(
                 f"{api_url}/api/cashflow/image",
@@ -79,7 +87,12 @@ async def handler_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     encoded_file = base64.b64encode(file.read()).decode("utf-8")
 
                 # Siapkan payload JSON
-                payload = {"file_name": "x.xlsx", "file_data": encoded_file}
+                payload = {
+                    "name" : user_name,
+                    "id" : user_id,
+                    "file_name": "x.xlsx", 
+                    "file_data": encoded_file
+                    }
 
                 # Kirim request POST
                 response = requests.post(
@@ -106,11 +119,16 @@ async def handler_income(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handler_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
+    user = update.message.from_user
+    user_name = user.name
+    user_id = user.id
     if message.text:
         try:
             document = message.text
 
             payload = {
+                "name" : user_name,
+                "id" : user_id,
                 "text": document
             }
 
@@ -137,7 +155,12 @@ async def handler_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             with open(file_path, "rb") as file:
                 encoded_file = base64.b64encode(file.read()).decode("utf-8")
-            payload = {"file_name": "gambar.jpg", "file_data": encoded_file}
+            payload = {
+                "name": user_name,
+                "id": user_id,
+                "file_name": "gambar.jpg",
+                "file_data": encoded_file,
+            }
 
             response = requests.post(
                 f"{api_url}/api/cashflow/image",
@@ -171,7 +194,12 @@ async def handler_outcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     encoded_file = base64.b64encode(file.read()).decode("utf-8")
 
                 # Siapkan payload JSON
-                payload = {"file_name": "x.xlsx", "file_data": encoded_file}
+                payload = {
+                    "name": user_name,
+                    "id": user_id,
+                    "file_name": "x.xlsx",
+                    "file_data": encoded_file,
+                }
 
                 # Kirim request POST
                 response = requests.post(
